@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- bootstrap CSS  -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+
+    <title>前台行程專區</title>
+
+    <!-- bootstrap -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+      crossorigin="anonymous"
+    ></script>
+
+    <link href="../css/ShowUserGroupTour.css" rel="stylesheet">
+  </head>
+  <body id="app">
+
+    <div class="container py-5">
+      <h1 class="text-center">前台行程資料</h1>
+      <div class="row row-cols-1 row-cols-md-3 g-4 py-5">
+        <!-- 產品資料 -->
+          <div  v-for="item in items" :key="item.groupTourID">
+            <div class="col">
+              <div class="card">
+                <img :src="'data:image/png;base64,' + item.itineraryImage"
+                style="width: 410px; height: 250px" class="card-img-top" >
+                  <div class="card-body">
+                      <h5 class="card-title">{{ item.itineraryName }}</h5>
+                      <ul class="list-inline" >
+                        <li class="list-inline-item" style="color: slategray;">{{ item.itineraryCode }}</li> 
+                        <li class="list-inline-item">席次人數:<mark >{{ item.seatCapacity }}人</mark></li>
+                      </ul>
+                      
+                      <p class="card-text overflow-auto">{{ item.feature1 }}</p>
+                  </div>
+                  <div class="mb-5 d-flex justify-content-around">
+                      <h3>{{ item.price }}$</h3>
+                      <button class="btn btn-primary" @click="Jump(item.groupTourID)" data-bs-toggle="modal" :data-bs-target="'#exampleModal-' + item.groupTourID">詳細行程</button>
+                  </div>
+              </div>
+              <!-- 跳出產品詳細資料 -->
+              <div class="modal fade" :id="'exampleModal-' + item.groupTourID" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-scrollable" >
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">ID:{{ item.groupTourID }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <!-- 標題圖片 -->
+                      <div>
+                        <img
+                          :src="'data:image/png;base64,' + item.itineraryImage"
+                          style="width: 1100px; height: 450px"
+                        />
+                      </div>
+                      <!-- 標題 -->
+                      <figure class="text-center">
+                        <blockquote class="blockquote">
+                          <h3 class="display-1" style="color: black;">{{ item.itineraryName }}</h3>
+                        </blockquote>
+                        <figcaption class="blockquote-footer">
+                          <cite title="Source Title">{{ item.itineraryCode }}</cite>
+                        </figcaption>
+                        <figure class="text-end">
+                          <figcaption class="blockquote-footer">
+                            <cite title="Source Title">去程時間:{{ item.departureDate }} 交通:{{ item.departureTransport }}</cite>
+                          </figcaption> 
+                          <figcaption class="blockquote-footer">
+                            <cite title="Source Title">回程時間:{{ item.returnDate }} 交通:{{ item.returnTransport }} </cite>
+                          </figcaption>
+                        </figure>
+                      </figure>
+                      <!-- 簡介 -->
+                      <div>
+                        <p>{{ item.itineraryContent }}</p>
+                      </div>
+                      <!-- 內容 -->
+                      <div style="height: 300px;">
+                        <img :src="'data:image/png;base64,' + item.featureImage1" class="rounded float-start" style="width: 250px; height: 250px; margin-bottom: 30px; border-radius: 30px;" />
+                        <div style="text-align: center; ">
+                          <div style="width: 550px; height: 250px; margin: 0 auto; ">
+                            <p style="text-align: left; margin-left: 20px;">{{ item.feature1 }}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style="height: 300px;">
+                        <img :src="'data:image/png;base64,' + item.featureImage2" class="rounded float-end" style="width: 250px; height: 250px; margin-bottom: 30px; border-radius: 30px;" />
+                        <div style="text-align: center; ">
+                          <div style="width: 550px; height: 250px; margin: 0 auto; ">
+                            <p style="text-align: left; margin-left: 20px;">{{ item.feature2 }}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style=" text-align: center;">
+                        <div style="display: inline-block; text-align: left; color: #808080;">
+                          {{ item.note }}
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                      <button type="button" class="btn btn-primary">確認</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+
+
+    <!-- 連到axios CDN  -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module">
+      // 連到Vue
+      import { createApp } from "https://www.unpkg.com/vue@3.4.19/dist/vue.esm-browser.prod.js";
+
+
+
+      const app = createApp({
+        data() {
+          return {
+            items: [],
+            isShow: true,
+            imagedata: "",
+            selectid: [],
+
+          };
+        },
+        mounted() {
+          axios
+            .get(`/GroupTourSelectAll.controller`)
+            .then((response) => {
+              console.log(response);
+              this.items = response.data;
+              console.log(this.items);
+            })
+            .catch((error) => {
+              console.error("資料獲取失敗", error);
+              console.log("error" + error);
+            })
+          },
+        methods: {
+          UpdatePage() {
+            axios
+              .post(`/GroupTourUpdateId.controller`)
+              .then((response)=>{
+                console.log("更新成功", response);
+              })
+              .catch((error)=>{
+                console.log("更新失敗",error);
+              })
+          },
+          DeletePage(groupTourID) {
+            if (confirm("確定要刪除嗎？")) {
+              axios
+                .delete(`/GroupTourDelete.controller/${groupTourID}`)
+                .then((response) => {
+                  console.log("刪除成功", response);
+                  this.loadData();
+                })
+                .catch((error) => {
+                  console.error("刪除失敗", error);
+                });
+            }
+            window.location.href = "http://localhost:8080/html/ShowGroupTour.html";
+          },
+          Jump(groupTourID){
+            axios
+            .get(`/GroupTourSelectId.controller/${groupTourID}`)
+            .then((response)=>{
+              console.response("跳轉單一成功", response);
+              window.location.href = `http://localhost:8080/html/ShowUserGroupTourDetail.html?id=${groupTourID}`;
+            })
+            .catch((error)=>{
+              console.error("跳轉單一成功失敗", error);
+            })
+          }
+        },
+      });
+
+      app.mount("#app");
+    </script>
+  </body>
+</html>
